@@ -15,17 +15,17 @@
         }
     ],
     "require": {
-        "php": "^7.1",
-        "laravel/socialite": "^3.0",
+        "php": "^7.2",
+        "laravel/socialite": "^4.1",
+        "illuminate/support": "~5.7.0|~5.8.0|^6.0",
         "google/auth": "^1.3",
         "google/apiclient": "^2.2",
         "doctrine/dbal": "^2.8"
     },
     "authors": [
         {
-            "name": "ColoredCow",
-            "email": "laravel@coloredcow.in",
-            "homepage": "https://coloredcow.com"
+            "name": "osmell caicedo",
+            "email": "correo.oele@coloredcow.in"
         }
     ],
     "autoload": {

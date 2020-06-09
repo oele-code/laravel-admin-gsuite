@@ -11,13 +11,15 @@ class UserServiceTest extends TestCase
 {
     protected $service;
 
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
         $this->service = app(UserService::class);
     }
 
     /** @test */
-    public function client_will_have_desired_scopes() {
+    public function client_will_have_desired_scopes()
+    {
         $client = $this->service->getClient();
         $this->assertEquals($client->getScopes(), $this->service->getServiceSpecificScopes());
     }

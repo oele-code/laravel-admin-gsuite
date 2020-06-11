@@ -4,12 +4,12 @@ A Laravel package to setup GSuite Admin SDK.
 ## Installation
 You can install the package using composer
 ```
-composer require coloredcow/laravel-gsuite
+composer require oele_code/laravel-admin-gsuite
 ```
 
 Publish the configurations
 ```
-php artisan vendor:publish --provider="ColoredCow\LaravelGSuite\Providers\GSuiteServiceProvider" --tag="config"
+php artisan vendor:publish --provider="oele_code\LaravelAdminGSuite\Providers\GSuiteServiceProvider" --tag="config"
 ```
 
 ## Setting up GSuite Admin Service
@@ -24,13 +24,13 @@ To know more about service account and steps to get one, visit [the official Goo
 
 You can now use various services provided by the package. For example, if you want to fetch a user details, you can use the `GSuiteUserService` facade.
 ```php
-use ColoredCow\LaravelGSuite\Facades\GSuiteUserService;
+use oele_code\LaravelAdminGSuite\Facades\GSuiteUserService;
 
 // ...
 
 $user = GSuiteUserService::fetch('jon@mycompany.com');
 
 echo $user->getName(); // Jon Snow
-echo $user->getJoinedOn(); // 2016-12-26 12:15:00
-echo $user->getDesignation(); // Lord Commander
-...
+```
+
+Forked from [ColoredCow/laravel-gsuite](https://github.com/ColoredCow/laravel-gsuite).

@@ -30,7 +30,8 @@ abstract class Service
         $this->setService();
     }
 
-    protected function setClient() {
+    protected function setClient()
+    {
         $this->client = new Google_Client();
         $this->client->useApplicationDefaultCredentials();
         $this->client->setSubject($this->getImpersonateUser());
@@ -44,11 +45,6 @@ abstract class Service
 
     public function getImpersonateUser()
     {
-        if(!config('gsuite.multitenancy')) {
-            return config('gsuite.service-account-impersonate');
-        }
-
-        $gsuiteConfigurations = app(config('gsuite.models.tenant.gsuite-configuration'));
-        return $gsuiteConfigurations->getServiceAccountImpersonate();
+        return config('gsuite.service-account-impersonate');
     }
 }

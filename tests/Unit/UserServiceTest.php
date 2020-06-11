@@ -1,11 +1,11 @@
 <?php
 
-namespace ColoredCow\LaravelGSuite\Test\Unit;
+namespace oele_code\LaravelAdminGSuite\Test\Unit;
 
-use ColoredCow\LaravelGSuite\Services\Service;
+use oele_code\LaravelAdminGSuite\Services\Service;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use ColoredCow\LaravelGSuite\Services\UserService;
-use ColoredCow\LaravelGSuite\Test\TestCase;
+use oele_code\LaravelAdminGSuite\Services\UserService;
+use oele_code\LaravelAdminGSuite\Test\TestCase;
 
 class UserServiceTest extends TestCase
 {

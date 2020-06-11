@@ -1,8 +1,8 @@
 <?php
 
-namespace ColoredCow\LaravelGSuite\Test;
+namespace oele_code\LaravelAdminGSuite\Test;
 
-use ColoredCow\LaravelGSuite\Services\Service;
+use oele_code\LaravelAdminGSuite\Services\Service;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class ServiceTest extends TestCase

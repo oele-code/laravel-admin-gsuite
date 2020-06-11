@@ -1,9 +1,9 @@
 <?php
 
-namespace ColoredCow\LaravelGSuite\Test;
+namespace oele_code\LaravelAdminGSuite\Test;
 
-use ColoredCow\LaravelGSuite\Providers\GSuiteServiceProvider;
-use ColoredCow\LaravelGSuite\Facades\GSuiteUserService;
+use oele_code\LaravelAdminGSuite\Providers\GSuiteServiceProvider;
+use oele_code\LaravelAdminGSuite\Facades\GSuiteUserService;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase

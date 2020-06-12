@@ -2,8 +2,10 @@
 
 namespace oele_code\LaravelAdminGSuite\Services;
 
-use Carbon\Carbon;
 use Google_Service_Directory;
+use Google_Service_Directory_User;
+use Google_Service_Directory_UserName;
+use Illuminate\Support\Facades\Validator;
 
 class UserService extends Service
 {
@@ -16,6 +18,7 @@ class UserService extends Service
         return [
             Google_Service_Directory::ADMIN_DIRECTORY_USER,
             Google_Service_Directory::ADMIN_DIRECTORY_USER_READONLY,
+            Google_Service_Directory::ADMIN_DIRECTORY_USER_SECURITY,
         ];
     }
 
@@ -24,49 +27,109 @@ class UserService extends Service
         $this->service = new Google_Service_Directory($this->client);
     }
 
-    public function fetch($email)
+    public function getUser(string $email)
     {
-        $user = $this->service->users->get($email);
-        $userOrganizations = $user->getOrganizations();
+        return $this->service->users->get($email);
+    }
 
-        $designation = null;
-        if (!is_null($userOrganizations)) {
-            $designation = $userOrganizations[0]['title'];
-        }
-        $this->setName($user->getName()->fullName);
-        $this->setJoinedOn(Carbon::parse($user->getCreationTime())->format('Y-m-d H:i:s'));
-        $this->setDesignation($designation);
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    public function getFullName()
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
+    public function setUser(Google_Service_Directory_User $user) {
+        $this->setEmail($user->getPrimaryEmail());
+        $this->setFirstName($user->getName()->getGivenName());
+        $this->setLastName($user->getName()->getFamilyName());
 
         return $this;
     }
 
-    public function setJoinedOn($joinedOn)
+    public function fetch($email)
     {
-        $this->joinedOn = $joinedOn;
+        $user = $this->getUser($email);
+        return  $this->setUser($user);
     }
 
-    public function getJoinedOn()
+    public function create(array $params)
     {
-        return $this->joinedOn;
+        Validator::make($params, [
+                'email'     => 'required|email',
+                'password'  => 'required|min:8',
+                'firstName' => 'required|min:3',
+                'lastName'  => 'required|min:3',
+            ])->validate();
+
+        $nameInstance    = new Google_Service_Directory_UserName;
+        $nameInstance->setGivenName($params['firstName']);
+        $nameInstance->setFamilyName($params['lastName']);
+
+        $userInstance = new Google_Service_Directory_User;
+        $userInstance->setName($nameInstance);
+        $userInstance->setPrimaryEmail($params['email']);
+        $userInstance->setPassword($params['password']);
+
+        try {
+            $user = $this->service->users->insert($userInstance);
+            return $this->setUser($user);
+        } catch (\Google_Service_Exception $gse) {
+            return $this->fetch($params['email']);
+        }
+
     }
 
-    public function setName($name)
+    public function updateName(string $email, array $params)
     {
-        $this->name = $name;
+        Validator::make($params, [
+            'firstName' => 'required|min:3',
+            'lastName' => 'required|min:3',
+        ])->validate();
+
+        $user = $this->getUser($email);
+        $name = $user->getName();
+
+        $name->setGivenName($params['firstName']);
+        $name->setFamilyName($params['lastName']);
+        $user->setName($name);
+
+        $updatedUser = $this->service->users->update($email, $user);
+
+        return $this->setUser($updatedUser);
     }
 
-    public function getName()
+    public function deleteUser(string $email)
     {
-        return $this->name;
-    }
-
-    public function setDesignation($designation)
-    {
-        $this->designation = $designation;
-    }
-
-    public function getDesignation()
-    {
-        return $this->designation;
+        $response = $this->service->users->delete($email);
+        return $response->getBody()->getContents();
     }
 }

@@ -4,21 +4,10 @@
     "keywords": ["gsuite", "laravel"],
     "homepage": "https://github.com/oele-code/laravel-admin-gsuite",
     "license": "MIT",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/ColoredCow/google-api-php-client"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/ColoredCow/google-auth-library-php"
-        }
-    ],
     "require": {
         "php": "^7.2",
         "illuminate/support": "~5.7.0|~5.8.0|^6.0|^7.0",
-        "google/auth": "^1.3",
-        "google/apiclient": "^2.2"
+        "google/apiclient": "^2.0"
     },
     "authors": [
         {

@@ -19,4 +19,9 @@
             <directory suffix=".php">src/</directory>
         </whitelist>
     </filter>
+    <php>
+        <env name="GOOGLE_ADMIN_DOMAIN" value="example.org"/>
+        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="credentials.json"/>
+        <env name="GOOGLE_SERVICE_ACCOUNT_IMPERSONATE" value="admin@example.org"/>
+    </php>
 </phpunit>

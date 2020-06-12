@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'admin-domain' => env('GOOGLE_ADMIN_DOMAIN'),
+
     /**
      * When using the GSuite API services, we need to know the application credentials for your domain.
      * This is the service account file that you need to get from your Google Developer Console.
@@ -14,4 +16,6 @@ return [
      * Laravel-GSuite will act on behalf of this user to perform all the API actions.
      */
     'service-account-impersonate' => env('GOOGLE_SERVICE_ACCOUNT_IMPERSONATE'),
+
+
 ];

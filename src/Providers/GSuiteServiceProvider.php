@@ -29,5 +29,10 @@ class GSuiteServiceProvider extends ServiceProvider
         $this->app->bind(UserService::class, function () {
             return new UserService;
         });
+
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/gsuite.php',
+            'gsuite'
+        );
     }
 }

@@ -9,7 +9,7 @@ class ServiceTest extends TestCase
 {
     protected $service;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->service = $this->getMockForAbstractClass(Service::class);

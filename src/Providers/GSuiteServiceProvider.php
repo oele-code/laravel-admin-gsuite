@@ -1,9 +1,9 @@
 <?php
 
-namespace oele_code\LaravelAdminGSuite\Providers;
+namespace oeleco\LaravelAdminGSuite\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use oele_code\LaravelAdminGSuite\Services\UserService;
+use oeleco\LaravelAdminGSuite\Services\UserService;
 
 class GSuiteServiceProvider extends ServiceProvider
 {

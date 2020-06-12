@@ -1,6 +1,6 @@
 <?php
 
-namespace oele_code\LaravelAdminGSuite\Services;
+namespace oeleco\LaravelAdminGSuite\Services;
 
 use Google_Client;
 use Google_Service_Directory;

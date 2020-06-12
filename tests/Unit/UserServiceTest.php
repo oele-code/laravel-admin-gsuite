@@ -1,11 +1,11 @@
 <?php
 
-namespace oele_code\LaravelAdminGSuite\Test\Unit;
+namespace oeleco\LaravelAdminGSuite\Test\Unit;
 
-use oele_code\LaravelAdminGSuite\Services\Service;
+use oeleco\LaravelAdminGSuite\Services\Service;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use oele_code\LaravelAdminGSuite\Services\UserService;
-use oele_code\LaravelAdminGSuite\Test\TestCase;
+use oeleco\LaravelAdminGSuite\Services\UserService;
+use oeleco\LaravelAdminGSuite\Test\TestCase;
 
 class UserServiceTest extends TestCase
 {

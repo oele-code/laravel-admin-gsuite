@@ -1,6 +1,6 @@
 <?php
 
-namespace oele_code\LaravelAdminGSuite\Services;
+namespace oeleco\LaravelAdminGSuite\Services;
 
 use Google_Service_Directory;
 use Google_Service_Directory_User;
@@ -67,7 +67,8 @@ class UserService extends Service
         return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
-    public function setUser(Google_Service_Directory_User $user) {
+    public function setUser(Google_Service_Directory_User $user)
+    {
         $this->setEmail($user->getPrimaryEmail());
         $this->setFirstName($user->getName()->getGivenName());
         $this->setLastName($user->getName()->getFamilyName());
@@ -105,7 +106,6 @@ class UserService extends Service
         } catch (\Google_Service_Exception $gse) {
             return $this->fetch($params['email']);
         }
-
     }
 
     public function updateName(string $email, array $params)

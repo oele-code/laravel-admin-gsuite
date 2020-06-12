@@ -4,12 +4,12 @@ A Laravel package to setup GSuite Admin SDK.
 ## Installation
 You can install the package using composer
 ```
-composer require oele_code/laravel-admin-gsuite
+composer require oeleco/laravel-admin-gsuite
 ```
 
 Publish the configurations
 ```
-php artisan vendor:publish --provider="oele_code\LaravelAdminGSuite\Providers\GSuiteServiceProvider" --tag="config"
+php artisan vendor:publish --provider="oeleco\LaravelAdminGSuite\Providers\GSuiteServiceProvider" --tag="config"
 ```
 
 ## Setting up GSuite Admin Service
@@ -24,7 +24,7 @@ To know more about service account and steps to get one, visit [the official Goo
 
 You can now use various services provided by the package. For example, if you want to fetch a user details, you can use the `GSuiteUserService` facade.
 ```php
-use oele_code\LaravelAdminGSuite\Facades\GSuiteUserService;
+use oeleco\LaravelAdminGSuite\Facades\GSuiteUserService;
 
 // ...
 

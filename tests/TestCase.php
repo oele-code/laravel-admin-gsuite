@@ -2,9 +2,9 @@
 
 namespace oele_code\LaravelAdminGSuite\Test;
 
-use oele_code\LaravelAdminGSuite\Providers\GSuiteServiceProvider;
-use oele_code\LaravelAdminGSuite\Facades\GSuiteUserService;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use oele_code\LaravelAdminGSuite\Facades\GSuiteUserService;
+use oele_code\LaravelAdminGSuite\Providers\GSuiteServiceProvider;
 
 class TestCase extends OrchestraTestCase
 {
@@ -44,6 +44,12 @@ class TestCase extends OrchestraTestCase
             'driver' => 'sqlite',
             'database' => ':memory:',
             'prefix' => '',
+        ]);
+
+        $app['config']->set('gsuite', [
+            'admin-domain'   => env('GOOGLE_ADMIN_DOMAIN'),
+            'application-credentials' => env('GOOGLE_APPLICATION_CREDENTIALS'),
+            'service-account-impersonate' => env('GOOGLE_SERVICE_ACCOUNT_IMPERSONATE')
         ]);
     }
 }

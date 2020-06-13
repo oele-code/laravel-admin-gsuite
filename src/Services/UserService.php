@@ -2,6 +2,7 @@
 
 namespace oeleco\LaravelAdminGSuite\Services;
 
+use Exception;
 use Google_Service_Directory;
 use Google_Service_Directory_User;
 use Google_Service_Directory_UserName;
@@ -104,7 +105,7 @@ class UserService extends Service
             $user = $this->service->users->insert($userInstance, $optionalParams);
             return $this->setUser($user);
         } catch (\Google_Service_Exception $gse) {
-            return $this->fetch($params['email']);
+            throw new Exception('already exists a count with the email '. $params['email'], $gse->getCode());
         }
     }
 

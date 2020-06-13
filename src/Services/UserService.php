@@ -82,7 +82,7 @@ class UserService extends Service
         return  $this->setUser($user);
     }
 
-    public function create(array $params)
+    public function create(array $params, array $optionalParams = [])
     {
         Validator::make($params, [
                 'email'     => 'required|email',
@@ -101,7 +101,7 @@ class UserService extends Service
         $userInstance->setPassword($params['password']);
 
         try {
-            $user = $this->service->users->insert($userInstance);
+            $user = $this->service->users->insert($userInstance, $optionalParams);
             return $this->setUser($user);
         } catch (\Google_Service_Exception $gse) {
             return $this->fetch($params['email']);

@@ -2,10 +2,9 @@
 
 namespace oeleco\LaravelAdminGSuite\Test\Unit;
 
-use oeleco\LaravelAdminGSuite\Services\Service;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use oeleco\LaravelAdminGSuite\Services\UserService;
+use Exception;
 use oeleco\LaravelAdminGSuite\Test\TestCase;
+use oeleco\LaravelAdminGSuite\Services\UserService;
 
 class UserServiceTest extends TestCase
 {
@@ -48,7 +47,7 @@ class UserServiceTest extends TestCase
 
 
     /** @test */
-    public function create_user()
+    public function create_user_account()
     {
         $params = [
             'email'     => $this->email,
@@ -59,6 +58,24 @@ class UserServiceTest extends TestCase
 
         $user = $this->service->create($params);
         $this->assertEquals($user->getEmail(), $params['email']);
+    }
+
+    /** @test */
+    public function cant_create_duplicate_account()
+    {
+        try {
+            $params = [
+                'email'     => $this->email,
+                'password'  => $this->faker->password,
+                'firstName' => $this->faker->firstName,
+                'lastName'  => $this->faker->lastName
+            ];
+
+            $user = $this->service->create($params);
+            $this->assertEquals($user->getEmail(), $params['email']);
+        } catch (Exception $e) {
+            $this->assertInstanceOf(\Exception::class, $e, 'An invalid exception was thrown');
+        }
     }
 
     /** @test  */
@@ -74,7 +91,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function deleted_user()
+    public function deleted_user_account()
     {
         $user = $this->service->deleteUser($this->email);
         $this->assertEmpty($user);

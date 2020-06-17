@@ -87,9 +87,9 @@ class UserService extends Service
     {
         $validator = Validator::make($params, [
                 'email'     => 'required|email',
-                'password'  => 'required|min:8',
                 'firstName' => 'required|min:3',
                 'lastName'  => 'required|min:3',
+                'password'  => 'required|min:8',
             ]);
 
         if ($validator->fails()) {
@@ -99,7 +99,7 @@ class UserService extends Service
             );
         }
 
-        $nameInstance    = new Google_Service_Directory_UserName;
+        $nameInstance = new Google_Service_Directory_UserName;
         $nameInstance->setGivenName($params['firstName']);
         $nameInstance->setFamilyName($params['lastName']);
 
@@ -120,7 +120,7 @@ class UserService extends Service
     {
         $validator = Validator::make($params, [
             'firstName' => 'required|min:3',
-            'lastName' => 'required|min:3',
+            'lastName' =>  'required|min:3',
         ]);
 
         if ($validator->fails()) {
@@ -135,8 +135,31 @@ class UserService extends Service
 
         $name->setGivenName($params['firstName']);
         $name->setFamilyName($params['lastName']);
+
         $user->setName($name);
 
+        $updatedUser = $this->service->users->update($email, $user);
+
+        return $this->setUser($updatedUser);
+    }
+
+    public function setPassword(string $email, string $password)
+    {
+        $validator = Validator::make([
+            'password' => $password
+        ], [
+            'password' => 'required|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            throw new Exception(
+                implode("\n", $validator->errors()->all()),
+                2
+            );
+        }
+
+        $user = $this->getUser($email);
+        $user->setPassword($password);
         $updatedUser = $this->service->users->update($email, $user);
 
         return $this->setUser($updatedUser);

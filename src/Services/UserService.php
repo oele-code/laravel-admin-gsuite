@@ -85,12 +85,19 @@ class UserService extends Service
 
     public function create(array $params, array $optionalParams = [])
     {
-        Validator::make($params, [
+        $validator = Validator::make($params, [
                 'email'     => 'required|email',
                 'password'  => 'required|min:8',
                 'firstName' => 'required|min:3',
                 'lastName'  => 'required|min:3',
-            ])->validate();
+            ]);
+
+        if ($validator->fails()) {
+            throw new Exception(
+                implode("\n", $validator->errors()->all()),
+                2
+            );
+        }
 
         $nameInstance    = new Google_Service_Directory_UserName;
         $nameInstance->setGivenName($params['firstName']);
@@ -111,10 +118,17 @@ class UserService extends Service
 
     public function updateName(string $email, array $params)
     {
-        Validator::make($params, [
+        $validator = Validator::make($params, [
             'firstName' => 'required|min:3',
             'lastName' => 'required|min:3',
-        ])->validate();
+        ]);
+
+        if ($validator->fails()) {
+            throw new Exception(
+                implode("\n", $validator->errors()->all()),
+                2
+            );
+        }
 
         $user = $this->getUser($email);
         $name = $user->getName();

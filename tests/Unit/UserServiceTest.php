@@ -20,8 +20,7 @@ class UserServiceTest extends TestCase
 
     protected function getFakeEmail()
     {
-        return "issac53@instiguaimaral.edu.co";
-        // return $this->faker->userName .'@'. config('gsuite.admin-domain');
+        return $this->faker->userName .'@'. config('gsuite.hosted_domain');
     }
 
     /** @test */
@@ -40,7 +39,7 @@ class UserServiceTest extends TestCase
     /** @test */
     public function impsersonate_user_is_defined()
     {
-        $email = config('gsuite.service-account-impersonate');
+        $email = config('gsuite.service_account_impersonate');
         $user  = $this->service->fetch($email);
         $this->assertEquals($user->getEmail(), $email);
     }
@@ -88,6 +87,13 @@ class UserServiceTest extends TestCase
 
         $user = $this->service->updateName($this->email, $params);
         $this->assertContains($user->getFullName(), implode(' ', $params));
+    }
+
+    /** @test */
+    public function update_password_account()
+    {
+        $user = $this->service->setPassword($this->email, $this->faker->password);
+        $this->assertEquals($user->getEmail(), $this->email);
     }
 
     /** @test */

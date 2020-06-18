@@ -47,9 +47,9 @@ class TestCase extends OrchestraTestCase
         ]);
 
         $app['config']->set('gsuite', [
-            'admin-domain'   => env('GOOGLE_ADMIN_DOMAIN'),
-            'application-credentials' => env('GOOGLE_APPLICATION_CREDENTIALS'),
-            'service-account-impersonate' => env('GOOGLE_SERVICE_ACCOUNT_IMPERSONATE')
+            'hosted_domain'   => env('GSUITE_HOSTED_DOMAIN'),
+            'application_credentials' => env('GSUITE_APPLICATION_CREDENTIALS'),
+            'service_account_impersonate' => env('GSUITE_SERVICE_ACCOUNT_IMPERSONATE')
         ]);
     }
 }

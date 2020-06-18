@@ -20,8 +20,8 @@
         </whitelist>
     </filter>
     <php>
-        <env name="GOOGLE_ADMIN_DOMAIN" value="example.org"/>
-        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="credentials.json"/>
-        <env name="GOOGLE_SERVICE_ACCOUNT_IMPERSONATE" value="admin@example.org"/>
+        <env name="GSUITE_HOSTED_DOMAIN" value="example.org"/>
+        <env name="GSUITE_APPLICATION_CREDENTIALS" value="credentials.json"/>
+        <env name="GSUITE_SERVICE_ACCOUNT_IMPERSONATE" value="admin@example.org"/>
     </php>
 </phpunit>

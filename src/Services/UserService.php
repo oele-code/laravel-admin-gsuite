@@ -83,7 +83,7 @@ class UserService extends Service
         return  $this->setUser($user);
     }
 
-    public function create(array $params, array $optionalParams = [])
+    public function create(array $params)
     {
         $validator = Validator::make($params, [
                 'email'     => 'required|email',
@@ -106,10 +106,11 @@ class UserService extends Service
         $userInstance = new Google_Service_Directory_User;
         $userInstance->setName($nameInstance);
         $userInstance->setPrimaryEmail($params['email']);
-        $userInstance->setPassword($params['password']);
+        $userInstance->setHashFunction('MD5');
+        $userInstance->setPassword(hash("md5", $params['password']));
 
         try {
-            $user = $this->service->users->insert($userInstance, $optionalParams);
+            $user = $this->service->users->insert($userInstance);
             return $this->setUser($user);
         } catch (\Google_Service_Exception $gse) {
             throw new Exception('already exists a count with the email '. $params['email'], $gse->getCode());
@@ -159,7 +160,9 @@ class UserService extends Service
         }
 
         $user = $this->getUser($email);
-        $user->setPassword($password);
+        $user->setHashFunction('MD5');
+        $user->setPassword(hash("md5", $password));
+
         $updatedUser = $this->service->users->update($email, $user);
 
         return $this->setUser($updatedUser);

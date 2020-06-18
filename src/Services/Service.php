@@ -33,7 +33,8 @@ abstract class Service
     protected function setClient()
     {
         $this->client = new Google_Client();
-        $this->client->useApplicationDefaultCredentials();
+        $this->client->setApplicationName('oeleco/laravel-admin-gsuite');
+        $this->client->setAuthConfig($this->getApplicationCredentials());
         $this->client->setSubject($this->getImpersonateUser());
         $this->client->addScope($this->getServiceSpecificScopes());
     }
@@ -43,8 +44,13 @@ abstract class Service
         return $this->client;
     }
 
+    public function getApplicationCredentials()
+    {
+        return config('gsuite.application_credentials');
+    }
+
     public function getImpersonateUser()
     {
-        return config('gsuite.service-account-impersonate');
+        return config('gsuite.service_account_impersonate');
     }
 }

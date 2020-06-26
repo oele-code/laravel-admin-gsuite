@@ -37,7 +37,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function impsersonate_user_is_defined()
+    public function impersonate_user_is_defined()
     {
         $email = config('gsuite.service_account_impersonate');
         $user  = $this->service->fetch($email);
@@ -78,7 +78,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test  */
-    public function update_user_fullname()
+    public function update_user_name()
     {
         $params =  [
             'firstName' => $this->faker->firstName,
@@ -86,7 +86,7 @@ class UserServiceTest extends TestCase
         ];
 
         $user = $this->service->updateName($this->email, $params);
-        $this->assertContains($user->getFullName(), implode(' ', $params));
+        $this->assertSame($user->getFirstName() . ' ' . $user->getLastName(), implode(' ', $params));
     }
 
     /** @test */
@@ -97,9 +97,23 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
+    public function suspend_account()
+    {
+        $user = $this->service->suspend($this->email);
+        $this->assertTrue($user->getSuspended());
+    }
+
+    /** @test */
+    public function active_account()
+    {
+        $user = $this->service->activate($this->email);
+        $this->assertFalse($user->getSuspended());
+    }
+
+    /** @test */
     public function deleted_user_account()
     {
-        $user = $this->service->deleteUser($this->email);
+        $user = $this->service->destroy($this->email);
         $this->assertEmpty($user);
     }
 }

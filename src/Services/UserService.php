@@ -11,9 +11,14 @@ use Illuminate\Validation\ValidationException;
 
 class UserService extends Service
 {
+    protected $customerId;
+
     protected $firstName;
+
     protected $lastName;
+
     protected $email;
+
     protected $suspended;
 
     public function getServiceSpecificScopes(): array
@@ -28,6 +33,16 @@ class UserService extends Service
     public function setService()
     {
         $this->service = new Google_Service_Directory($this->client);
+    }
+
+    public function getCustomerId()
+    {
+        return $this->customerId;
+    }
+
+    public function setCustomerId(string $customerId)
+    {
+        $this->customerId = $customerId;
     }
 
     public function getFirstName()
@@ -75,6 +90,7 @@ class UserService extends Service
         $user = $this->service->users->get($email);
         $name = $user->getName();
 
+        $this->setCustomerId($user->getCustomerId());
         $this->setFirstName($name->getGivenName());
         $this->setLastName($name->getFamilyName());
         $this->setEmail($user->getPrimaryEmail());

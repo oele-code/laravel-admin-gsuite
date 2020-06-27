@@ -39,7 +39,7 @@ class UserServiceTest extends TestCase
     /** @test */
     public function impersonate_user_is_defined()
     {
-        $email = config('gsuite.service_account_impersonate');
+        $email = $this->service->getImpersonateUser();
         $user  = $this->service->fetch($email);
         $this->assertEquals($user->getEmail(), $email);
     }

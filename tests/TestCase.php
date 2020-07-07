@@ -1,10 +1,10 @@
 <?php
 
-namespace oeleco\LaravelAdminGSuite\Test;
+namespace oeleco\Larasuite\Test;
 
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use oeleco\LaravelAdminGSuite\Facades\GSuiteUserService;
-use oeleco\LaravelAdminGSuite\Providers\GSuiteServiceProvider;
+use oeleco\Larasuite\Facades\GSuiteUserService;
+use oeleco\Larasuite\Providers\GSuiteServiceProvider;
 
 class TestCase extends OrchestraTestCase
 {

@@ -1,8 +1,8 @@
 {
-    "name": "oeleco/laravel-admin-gsuite",
+    "name": "oeleco/larasuite",
     "description": "A Laravel package to setup GSuite Admin SDK",
     "keywords": ["gsuite", "laravel"],
-    "homepage": "https://github.com/oele-code/laravel-admin-gsuite",
+    "homepage": "https://github.com/oele-code/larasuite",
     "license": "MIT",
     "require": {
         "php": "^7.2",
@@ -17,21 +17,21 @@
     ],
     "autoload": {
         "psr-4": {
-            "oeleco\\LaravelAdminGSuite\\": "src"
+            "oeleco\\Larasuite\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "oeleco\\LaravelAdminGSuite\\Test\\": "tests/"
+            "oeleco\\Larasuite\\Test\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "oeleco\\LaravelAdminGSuite\\Providers\\GSuiteServiceProvider"
+                "oeleco\\Larasuite\\Providers\\GSuiteServiceProvider"
             ],
             "aliases": {
-                "GSuiteUserService": "oeleco\\LaravelAdminGSuite\\Facades\\GSuiteUserService"
+                "GSuiteUserService": "oeleco\\Larasuite\\Facades\\GSuiteUserService"
             }
         }
     },

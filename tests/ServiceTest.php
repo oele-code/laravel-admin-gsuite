@@ -1,8 +1,8 @@
 <?php
 
-namespace oeleco\LaravelAdminGSuite\Test;
+namespace oeleco\Larasuite\Test;
 
-use oeleco\LaravelAdminGSuite\Services\Service;
+use oeleco\Larasuite\Services\Service;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class ServiceTest extends TestCase

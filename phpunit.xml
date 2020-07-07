@@ -10,7 +10,7 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="LaravelAdminGSuite Test Suite">
+        <testsuite name="Larasuite Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

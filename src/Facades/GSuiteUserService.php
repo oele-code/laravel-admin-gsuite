@@ -1,8 +1,8 @@
 <?php
 
-namespace oeleco\LaravelAdminGSuite\Facades;
+namespace oeleco\Larasuite\Facades;
 
-use oeleco\LaravelAdminGSuite\Services\UserService;
+use oeleco\Larasuite\Services\UserService;
 use Illuminate\Support\Facades\Facade;
 
 class GSuiteUserService extends Facade

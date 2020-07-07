@@ -1,9 +1,10 @@
 <?php
 
-namespace oeleco\LaravelAdminGSuite\Providers;
+namespace oeleco\Larasuite\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use oeleco\LaravelAdminGSuite\Services\UserService;
+use oeleco\Larasuite\Services\OrgUnitService;
+use oeleco\Larasuite\Services\UserService;
 
 class GSuiteServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,10 @@ class GSuiteServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserService::class, function () {
             return new UserService;
+        });
+
+        $this->app->bind(OrgUnitService::class, function () {
+            return new OrgUnitService;
         });
 
         $this->mergeConfigFrom(

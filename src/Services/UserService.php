@@ -1,6 +1,6 @@
 <?php
 
-namespace oeleco\LaravelAdminGSuite\Services;
+namespace oeleco\Larasuite\Services;
 
 use Exception;
 use Google_Service_Directory;
@@ -18,6 +18,8 @@ class UserService extends Service
     protected $lastName;
 
     protected $email;
+
+    protected $orgUnitPath;
 
     protected $suspended;
 
@@ -75,6 +77,16 @@ class UserService extends Service
         $this->email = $email;
     }
 
+    public function getOrgUnitPath()
+    {
+        return $this->orgUnitPath;
+    }
+
+    public function setOrgUnitPath(string $orgUnitPath)
+    {
+        $this->orgUnitPath = $orgUnitPath;
+    }
+
     public function getSuspended()
     {
         return $this->suspended;
@@ -108,13 +120,14 @@ class UserService extends Service
                     'email'     => 'required|email',
                     'firstName' => 'required|min:3',
                     'lastName'  => 'required|min:3',
-                    'password'  => 'required|min:8'
+                    'password'  => 'required|min:8',
                 ]
             )->validate();
 
             $this->setFirstName($input['firstName']);
             $this->setLastName($input['lastName']);
             $this->setEmail($input['email']);
+            $this->setOrgUnitPath($input['orgUnitPath'] ?? '/');
             $this->setSuspended($input['suspended'] ?? false);
 
 
@@ -125,6 +138,7 @@ class UserService extends Service
             $userInstance = new Google_Service_Directory_User;
             $userInstance->setName($nameInstance);
             $userInstance->setPrimaryEmail($this->getEmail());
+            $userInstance->setOrgUnitPath($this->getOrgUnitPath());
             $userInstance->setHashFunction('MD5');
             $userInstance->setPassword(hash("md5", $input['password']));
 
@@ -138,28 +152,32 @@ class UserService extends Service
         }
     }
 
-    public function updateName(string $email, array $input)
+    public function update(string $email, array $input)
     {
-        try {
-            Validator::make(
-                $input,
-                [
-                    'firstName' => 'required|min:3',
-                    'lastName' =>  'required|min:3',
-                ]
-            );
+        Validator::make(
+            $input,
+            [
+                'firstName'  => 'min:3',
+                'lastName'   => 'min:3',
+            ]
+        );
 
+
+        try {
             $this->fetch($email);
             $this->setFirstName($input['firstName']);
             $this->setLastName($input['lastName']);
+            $this->setOrgUnitPath($input['orgUnitPath'] ?? "/");
 
             $user = $this->service->users->get($this->getEmail());
 
             $name = $user->getName();
             $name->setGivenName($this->getFirstName());
             $name->setFamilyName($this->getLastName());
-
+            $name->setFamilyName($this->getLastName());
             $user->setName($name);
+
+            $user->setOrgUnitPath($this->getOrgUnitPath());
 
             $this->service->users->update($email, $user);
 

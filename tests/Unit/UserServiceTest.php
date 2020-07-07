@@ -1,10 +1,10 @@
 <?php
 
-namespace oeleco\LaravelAdminGSuite\Test\Unit;
+namespace oeleco\Larasuite\Test\Unit;
 
 use Exception;
-use oeleco\LaravelAdminGSuite\Test\TestCase;
-use oeleco\LaravelAdminGSuite\Services\UserService;
+use oeleco\Larasuite\Test\TestCase;
+use oeleco\Larasuite\Services\UserService;
 
 class UserServiceTest extends TestCase
 {
@@ -85,7 +85,7 @@ class UserServiceTest extends TestCase
             'lastName' => $this->faker->lastName
         ];
 
-        $user = $this->service->updateName($this->email, $params);
+        $user = $this->service->update($this->email, $params);
         $this->assertSame($user->getFirstName() . ' ' . $user->getLastName(), implode(' ', $params));
     }
 

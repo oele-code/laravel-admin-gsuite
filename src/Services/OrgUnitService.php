@@ -4,7 +4,6 @@ namespace oeleco\Larasuite\Services;
 
 use Exception;
 use Google_Service_Directory;
-use Illuminate\Support\Collection;
 use Google_Service_Directory_OrgUnit;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -16,6 +15,8 @@ class OrgUnitService extends Service
     protected $id;
 
     protected $name;
+
+    protected $path;
 
     protected $parentPath;
 
@@ -72,6 +73,16 @@ class OrgUnitService extends Service
         $this->name = $name;
     }
 
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function setPath(string $path)
+    {
+        $this->path = $path;
+    }
+
     public function getParentPath()
     {
         return $this->parentPath;
@@ -99,6 +110,7 @@ class OrgUnitService extends Service
 
         $this->setId($orgUnit->getOrgUnitId());
         $this->setName($orgUnit->getName());
+        $this->setPath($orgUnit->getOrgUnitPath());
         $this->setParentPath($orgUnit->getParentOrgUnitPath());
         $this->setDescription($orgUnit->getDescription() ?? '');
 
@@ -108,16 +120,12 @@ class OrgUnitService extends Service
 
     public function get()
     {
-        $orgUnits = new Collection($this->service->orgunits->listOrgunits($this->getCustomerId()));
+        $list = $this->service->orgunits->listOrgunits($this->getCustomerId());
+        foreach ($list as $orgUnit) {
+            $arr[] = $this->fetch($orgUnit->getOrgUnitId());
+        }
 
-        return $orgUnits->map(function ($orgUnit) {
-            $this->setId($orgUnit->getOrgUnitId());
-            $this->setName($orgUnit->getName());
-            $this->setParentPath($orgUnit->getParentOrgUnitPath());
-            $this->setDescription($orgUnit->getDescription() ?? '');
-
-            return $this;
-        });
+        return $arr;
     }
 
     public function create(array $input)
@@ -142,7 +150,9 @@ class OrgUnitService extends Service
             $orgUnitInstance->getDescription($this->getDescription());
 
             $orgUnitCreated = $this->service->orgunits->insert($this->getCustomerId(), $orgUnitInstance);
+
             $this->setId($orgUnitCreated->getOrgUnitId());
+            $this->setPath($orgUnitCreated->getOrgUnitPath());
 
             return $this;
         } catch (ValidationException $v) {
@@ -156,17 +166,19 @@ class OrgUnitService extends Service
             Validator::make(
                 $input,
                 [
-                    'name'        => 'required|min:3',
-                    'description' =>  'nullable|min:3|max:255',
+                    'name'        => 'min:3',
+                    'description' => 'min:3|max:255',
                 ]
             );
 
             $this->fetch($id);
-            $this->setName($input['name']);
-            $this->setDescription($input['description'] ?? '');
+            $this->setName($input['name'] ?? $this->getName());
+            $this->setParentPath($input['parentPath'] ?? $this->getParentPath());
+            $this->setDescription($input['description'] ?? $this->getDescription());
 
             $orgUnit = $this->service->orgunits->get($this->getCustomerId(), $this->getId());
             $orgUnit->setName($this->getName());
+            $orgUnit->setParentOrgUnitPath($this->getName());
             $orgUnit->setDescription($this->getDescription());
 
             $this->service->orgunits->update($this->getCustomerId(), $this->getId(), $orgUnit);

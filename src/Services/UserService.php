@@ -154,17 +154,23 @@ class UserService extends Service
 
     public function update(string $email, array $input)
     {
-        Validator::make(
-            $input,
-            [
-                'firstName'  => 'min:3',
-                'lastName'   => 'min:3',
-            ]
-        );
-
-
         try {
             $this->fetch($email);
+
+            $input = [
+                'firstName'     => $input['firstName'] ?? $this->getFirstName(),
+                'lastName'      => $input['lastName']   ?? $this->getLastName(),
+                'orgUnitPath'   => $input['orgUnitPath'] ?? $this->getOrgUnitPath(),
+            ];
+
+            Validator::make(
+                $input,
+                [
+                    'firstName'  => 'min:3',
+                    'lastName'   => 'min:3',
+                ]
+            );
+
             $this->setFirstName($input['firstName']);
             $this->setLastName($input['lastName']);
             $this->setOrgUnitPath($input['orgUnitPath'] ?? "/");

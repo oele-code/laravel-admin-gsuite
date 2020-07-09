@@ -103,7 +103,6 @@ class OrgUnitService extends Service
         $this->description = $description;
     }
 
-
     public function fetch(string $id)
     {
         $orgUnit = $this->service->orgunits->get($this->getCustomerId(), $id);
@@ -117,12 +116,12 @@ class OrgUnitService extends Service
         return $this;
     }
 
-
     public function get()
     {
         $list = $this->service->orgunits->listOrgunits($this->getCustomerId());
+        $arr = [];
         foreach ($list as $orgUnit) {
-            $arr[] = $this->fetch($orgUnit->getOrgUnitId());
+            $arr[] = (new self)->fetch($orgUnit->getOrgUnitId());
         }
 
         return $arr;

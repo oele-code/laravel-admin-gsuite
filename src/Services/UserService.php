@@ -2,7 +2,6 @@
 
 namespace oeleco\Larasuite\Services;
 
-use Exception;
 use Google_Service_Directory;
 use Google_Service_Directory_User;
 use Google_Service_Directory_UserName;
@@ -100,15 +99,33 @@ class UserService extends Service
     public function fetch($email)
     {
         $user = $this->service->users->get($email);
-        $name = $user->getName();
 
         $this->setCustomerId($user->getCustomerId());
-        $this->setFirstName($name->getGivenName());
-        $this->setLastName($name->getFamilyName());
+        $this->setFirstName($user->getName()->getGivenName());
+        $this->setLastName($user->getName()->getFamilyName());
         $this->setEmail($user->getPrimaryEmail());
         $this->setSuspended($user->getSuspended());
 
         return $this;
+    }
+
+    public function get(array $optionalParams = null)
+    {
+        $response = $this->service->users->listUsers($optionalParams);
+        $arr = [];
+        foreach ($response['users'] as $user) {
+            $self = new self;
+            $self->setCustomerId($user->getCustomerId());
+            $self->setCustomerId($user->getCustomerId());
+            $self->setFirstName($user->getName()->getGivenName());
+            $self->setLastName($user->getName()->getFamilyName());
+            $self->setEmail($user->getPrimaryEmail());
+            $self->setSuspended($user->getSuspended());
+
+            $arr[] = $self;
+        }
+
+        return $arr;
     }
 
     public function create(array $input)
@@ -148,7 +165,7 @@ class UserService extends Service
         } catch (ValidationException $v) {
             $this->handleException($v);
         } catch (\Google_Service_Exception $gse) {
-            throw new Exception('already exists a count with the email '. $input['email'], $gse->getCode());
+            throw new \Exception('already exists a count with the email '. $input['email'], $gse->getCode());
         }
     }
 
@@ -191,7 +208,7 @@ class UserService extends Service
         } catch (ValidationException $v) {
             $this->handleException($v);
         } catch (\Throwable $th) {
-            throw new Exception('Error to update account : '. $this->getEmail(), $th->getCode());
+            throw new \Exception('Error to update account : '. $this->getEmail(), $th->getCode());
         }
     }
 
@@ -209,7 +226,7 @@ class UserService extends Service
 
             return $this;
         } catch (ValidationException $v) {
-            throw new Exception($v->getResponse(), $v->getCode());
+            throw new \Exception($v->getResponse(), $v->getCode());
         }
     }
 
@@ -258,6 +275,6 @@ class UserService extends Service
     {
         $errors = print_r($v->errors(), true);
 
-        throw new Exception($errors, $v->getCode());
+        throw new \Exception($errors, $v->getCode());
     }
 }

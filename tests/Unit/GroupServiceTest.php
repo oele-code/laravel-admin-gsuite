@@ -1,81 +1,77 @@
 <?php
 
-namespace oeleco\Larasuite\Test\Unit;
+use function Pest\Faker\faker;
+use function Tests\getEmailAccount;
 
-use Exception;
-use oeleco\Larasuite\Test\TestCase;
 use oeleco\Larasuite\Services\GroupService;
 
-class GroupServiceTest extends TestCase
-{
-    protected $service;
+beforeEach(function () {
+    $this->service = app(GroupService::class);
+    $this->email   = getEmailAccount();
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->service = app(GroupService::class);
-        $this->faker   = \Faker\Factory::create();
-    }
+test('client will have desired scopes', function () {
+    $client = $this->service->getClient();
 
-    protected function getEmail($username)
-    {
-        return $username .'@'. config('gsuite.hosted_domain');
-    }
+    assertEquals($client->getScopes(), $this->service->getServiceSpecificScopes());
+});
 
-    /** @test */
-    public function client_will_have_desired_scopes()
-    {
-        $client = $this->service->getClient();
-        $this->assertEquals($client->getScopes(), $this->service->getServiceSpecificScopes());
-    }
+it('will have desired service', function () {
+    assertInstanceOf(\Google_Service_Directory::class, $this->service->service);
+});
 
-    /** @test */
-    public function it_will_have_desired_service()
-    {
-        $this->assertInstanceOf(\Google_Service_Directory::class, $this->service->service);
-    }
+test('create a new group', function () {
+    $data =  [
+        'name'  => faker()->company,
+        'email' => $this->email,
+    ];
 
-    /** @test */
-    public function create_group()
-    {
-        $data =  [
-            'name'  => $this->faker->name,
-            'email' => $this->getEmail($this->faker->username),
-        ];
+    $createdGroup = $this->service->create($data);
 
-        $group = $this->service->create($data);
+    assertEquals(
+        [
+        'name'  => $createdGroup->getName(),
+        'email' => $createdGroup->getEmail()
+    ],
+        $data
+    );
 
-        $this->assertEquals($group->getName(), $data['name']);
-    }
+    $this->service->destroy($createdGroup->getId());
+});
 
-    /** @test */
-    public function updated_group()
-    {
-        $group = $this->service->create([
-                    'name' => $this->faker->company,
-                    'email' => $this->getEmail($this->faker->username),
-                ]);
+test('update a google description', function () {
+    $createdGroup = $this->service->create([
+        'name'  => faker()->company,
+        'email' => $this->email
+    ]);
 
-        $data = [
-            'name' => $this->faker->company,
-            'description' => $this->faker->catchPhrase,
-        ];
+    sleep(5); // wait for data propagation by API
 
-        $UpdatedGroup = $this->service->update($group->getId(), $data);
+    $data = [
+        'name'        => faker()->company,
+        'description' => faker()->catchPhrase,
+    ];
 
-        $this->assertEquals($UpdatedGroup->getName(), $data['name']);
-    }
+    $UpdatedGroup = $this->service->update($createdGroup->getId(), $data);
 
-    /** @test */
-    public function delete_group()
-    {
-        $group = $this->service->create([
-            'name' => $this->faker->company,
-            'email' => $this->getEmail($this->faker->username),
-        ]);
+    $this->assertEquals([
+        'name'        => $UpdatedGroup->getName(),
+        'description' => $UpdatedGroup->getDescription()
+    ], $data);
 
-        $this->assertEmpty(
-            $this->service->destroy($group->getId())
-        );
-    }
-}
+    $this->service->destroy($UpdatedGroup->getId());
+});
+
+
+test('delete a google group', function () {
+    $createdGroup = $this->service->create([
+        'name'  => faker()->company,
+        'email' => $this->email
+    ]);
+
+    sleep(5); // wait for data propagation by API
+
+    $this->assertEmpty(
+        $this->service->destroy($createdGroup->getId())
+    );
+});

@@ -5,6 +5,7 @@ namespace oeleco\Larasuite\Providers;
 use Illuminate\Support\ServiceProvider;
 use oeleco\Larasuite\Services\UserService;
 use oeleco\Larasuite\Services\GroupService;
+use oeleco\Larasuite\Services\MemberService;
 use oeleco\Larasuite\Services\OrgUnitService;
 
 class GSuiteServiceProvider extends ServiceProvider
@@ -38,6 +39,10 @@ class GSuiteServiceProvider extends ServiceProvider
 
         $this->app->bind(GroupService::class, function () {
             return new GroupService;
+        });
+
+        $this->app->bind(MemberService::class, function () {
+            return new MemberService;
         });
 
         $this->mergeConfigFrom(

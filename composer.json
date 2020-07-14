@@ -33,7 +33,10 @@
                 "oeleco\\Larasuite\\Providers\\GSuiteServiceProvider"
             ],
             "aliases": {
-                "GSuiteUserService": "oeleco\\Larasuite\\Facades\\GSuiteUserService"
+                "GSuiteUserService": "oeleco\\Larasuite\\Facades\\GSuiteUserService",
+                "GSuiteOrgUnitService": "oeleco\\Larasuite\\Facades\\GSuiteOrgUnitService",
+                "GSuiteGroupService": "oeleco\\Larasuite\\Facades\\GSuiteGroupService",
+                "GSuiteMemberService": "oeleco\\Larasuite\\Facades\\GSuiteMemberService"
             }
         }
     },

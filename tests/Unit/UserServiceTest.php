@@ -1,119 +1,158 @@
 <?php
 
-namespace oeleco\Larasuite\Test\Unit;
+use function Pest\Faker\faker;
+use function Tests\getEmailAccount;
 
-use Exception;
-use oeleco\Larasuite\Test\TestCase;
 use oeleco\Larasuite\Services\UserService;
 
-class UserServiceTest extends TestCase
-{
-    protected $service;
+beforeEach(function () {
+    $this->service = app(UserService::class);
+    $this->email   = getEmailAccount();
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->service = app(UserService::class);
-        $this->faker   = \Faker\Factory::create();
-        $this->email   = $this->getFakeEmail();
+test('client will have desired scopes', function () {
+    $client = $this->service->getClient();
+
+    assertEquals($client->getScopes(), $this->service->getServiceSpecificScopes());
+});
+
+it('it will have desired service', function () {
+    assertInstanceOf(\Google_Service_Directory::class, $this->service->service);
+});
+
+it('impersonate user is defined', function () {
+    $email = $this->service->getImpersonateUser();
+    $user  = $this->service->fetch($email);
+
+    assertEquals($user->getEmail(), $email);
+});
+
+test('create user account', function () {
+    $params = [
+        'email'     => $this->email,
+        'password'  => faker()->bothify('##??##??'),
+        'firstName' => faker()->firstName,
+        'lastName'  => faker()->lastName
+    ];
+
+    $createdUser = $this->service->create($params);
+
+    assertEquals($createdUser->getEmail(), $params['email']);
+
+    $this->service->destroy($createdUser->getEmail());
+});
+
+test('cant create duplicate account', function () {
+    $params = [
+        'email'     => $this->email,
+        'password'  =>faker()->bothify('##??##??'),
+        'firstName' =>faker()->firstName,
+        'lastName'  =>faker()->lastName
+    ];
+
+    $createdUser = $this->service->create($params);
+    sleep(5); // wait for data replication by API
+
+    try {
+        $this->service->create($params);
+    } catch (\Exception $e) {
+        assertEquals($e->getMessage(), 'already exists a count with the email '. $this->email);
     }
 
-    protected function getFakeEmail()
-    {
-        return $this->faker->userName .'@'. config('gsuite.hosted_domain');
-    }
+    $this->service->destroy($createdUser->getEmail());
+});
 
-    /** @test */
-    public function client_will_have_desired_scopes()
-    {
-        $client = $this->service->getClient();
-        $this->assertEquals($client->getScopes(), $this->service->getServiceSpecificScopes());
-    }
+test('update user name', function () {
+    $createdUser = $this->service->create([
+        'email'     => $this->email,
+        'password'  => faker()->bothify('##??##??'),
+        'firstName' => faker()->firstName,
+        'lastName'  => faker()->lastName
+    ]);
 
-    /** @test */
-    public function it_will_have_desired_service()
-    {
-        $this->assertInstanceOf(\Google_Service_Directory::class, $this->service->service);
-    }
+    sleep(5); // wait for data replication by API
 
-    /** @test */
-    public function impersonate_user_is_defined()
-    {
-        $email = $this->service->getImpersonateUser();
-        $user  = $this->service->fetch($email);
-        $this->assertEquals($user->getEmail(), $email);
-    }
+    $updatedParams =  [
+        'firstName' => faker()->firstName,
+        'lastName'  => faker()->lastName
+    ];
+
+    $updatedUser = $this->service->update($createdUser->getEmail(), $updatedParams);
+
+    assertEquals($updatedParams, [
+        'firstName' => $updatedUser->getFirstName(),
+        'lastName'  => $updatedUser->getLastName()
+    ]);
+
+    $this->service->destroy($updatedUser->getEmail());
+});
+
+test('update password account', function () {
+    $createdUser = $this->service->create([
+        'email'     => $this->email,
+        'password'  => faker()->bothify('##??##??'),
+        'firstName' => faker()->firstName,
+        'lastName'  => faker()->lastName
+    ]);
+
+    sleep(5); // wait for data replication by API
+
+    $updatedUser = $this->service->setPassword(
+        $createdUser->getEmail(),
+        faker()->bothify('##??##??')
+    );
+
+    assertEquals($updatedUser->getEmail(), $createdUser->getEmail());
+
+    $this->service->destroy($updatedUser->getEmail());
+});
+
+test('suspend account', function () {
+    $createdUser = $this->service->create([
+        'email'     => $this->email,
+        'password'  => faker()->bothify('##??##??'),
+        'firstName' => faker()->firstName,
+        'lastName'  => faker()->lastName
+    ]);
+
+    sleep(5); // wait for data replication by API
+
+    $suspendedUser = $this->service->suspend($createdUser->getEmail());
+
+    assertTrue($suspendedUser->getSuspended());
+
+    $this->service->destroy($suspendedUser->getEmail());
+});
+
+test('activate account', function () {
+    $createdUser = $this->service->create([
+        'email'     => $this->email,
+        'password'  => faker()->bothify('##??##??'),
+        'firstName' => faker()->firstName,
+        'lastName'  => faker()->lastName
+    ]);
+
+    sleep(5); // wait for data replication by API
+
+    $activeUser = $this->service->activate($createdUser->getEmail());
+
+    assertFalse($activeUser->getSuspended());
+
+    $this->service->destroy($activeUser->getEmail());
+});
 
 
-    /** @test */
-    public function create_user_account()
-    {
-        $params = [
-            'email'     => $this->email,
-            'password'  => $this->faker->password,
-            'firstName' => $this->faker->firstName,
-            'lastName'  => $this->faker->lastName
-        ];
+test('delete user account', function () {
+    $createdUser = $this->service->create([
+        'email'     => $this->email,
+        'password'  => faker()->bothify('##??##??'),
+        'firstName' => faker()->firstName,
+        'lastName'  => faker()->lastName
+    ]);
 
-        $user = $this->service->create($params);
-        $this->assertEquals($user->getEmail(), $params['email']);
-    }
+    sleep(5); // wait for data replication by API
 
-    /** @test */
-    public function cant_create_duplicate_account()
-    {
-        try {
-            $params = [
-                'email'     => $this->email,
-                'password'  => $this->faker->password,
-                'firstName' => $this->faker->firstName,
-                'lastName'  => $this->faker->lastName
-            ];
+    $deletedUser = $this->service->destroy($createdUser->getEmail());
 
-            $user = $this->service->create($params);
-            $this->assertEquals($user->getEmail(), $params['email']);
-        } catch (Exception $e) {
-            $this->assertInstanceOf(\Exception::class, $e, 'An invalid exception was thrown');
-        }
-    }
-
-    /** @test  */
-    public function update_user_name()
-    {
-        $params =  [
-            'firstName' => $this->faker->firstName,
-            'lastName' => $this->faker->lastName
-        ];
-
-        $user = $this->service->update($this->email, $params);
-        $this->assertSame($user->getFirstName() . ' ' . $user->getLastName(), implode(' ', $params));
-    }
-
-    /** @test */
-    public function update_password_account()
-    {
-        $user = $this->service->setPassword($this->email, $this->faker->password);
-        $this->assertEquals($user->getEmail(), $this->email);
-    }
-
-    /** @test */
-    public function suspend_account()
-    {
-        $user = $this->service->suspend($this->email);
-        $this->assertTrue($user->getSuspended());
-    }
-
-    /** @test */
-    public function active_account()
-    {
-        $user = $this->service->activate($this->email);
-        $this->assertFalse($user->getSuspended());
-    }
-
-    /** @test */
-    public function deleted_user_account()
-    {
-        $user = $this->service->destroy($this->email);
-        $this->assertEmpty($user);
-    }
-}
+    assertEmpty($deletedUser);
+});

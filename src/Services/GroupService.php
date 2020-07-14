@@ -108,7 +108,13 @@ class GroupService extends Service
         $response = $this->service->orgunits->list($this->getCustomerId());
         $arr = [];
         foreach ($response['groups'] as $group) {
-            $arr[] = (new self)->fetch($group->getId());
+            $self =  new self;
+            $self->setId($group->getId());
+            $self->setEmail($group->getEmail());
+            $self->setName($group->getName());
+            $self->setDescription($group->getDescription() ?? '');
+
+            $arr[] = $self;
         }
 
         return $arr;

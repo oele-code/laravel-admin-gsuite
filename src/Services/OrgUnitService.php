@@ -121,7 +121,15 @@ class OrgUnitService extends Service
         $list = $this->service->orgunits->listOrgunits($this->getCustomerId());
         $arr = [];
         foreach ($list as $orgUnit) {
-            $arr[] = (new self)->fetch($orgUnit->getOrgUnitId());
+            $self = new self;
+            $self->setId($orgUnit->getOrgUnitId());
+            $self->setName($orgUnit->getName());
+            $self->setPath($orgUnit->getOrgUnitPath());
+            $self->setParentPath($orgUnit->getParentOrgUnitPath());
+            $self->setDescription($orgUnit->getDescription() ?? '');
+
+
+            $arr[] = $self;
         }
 
         return $arr;
@@ -177,7 +185,7 @@ class OrgUnitService extends Service
 
             $orgUnit = $this->service->orgunits->get($this->getCustomerId(), $this->getId());
             $orgUnit->setName($this->getName());
-            $orgUnit->setParentOrgUnitPath($this->getName());
+            $orgUnit->setParentOrgUnitPath($this->getParentPath());
             $orgUnit->setDescription($this->getDescription());
 
             $this->service->orgunits->update($this->getCustomerId(), $this->getId(), $orgUnit);

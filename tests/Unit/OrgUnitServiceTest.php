@@ -14,7 +14,7 @@ test('client will have desired scopes', function () {
     assertEquals($client->getScopes(), $this->service->getServiceSpecificScopes());
 });
 
-it('it will have desired service', function () {
+it('will have desired service', function () {
     assertInstanceOf(\Google_Service_Directory::class, $this->service->service);
 });
 

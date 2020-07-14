@@ -1,30 +1,16 @@
 <?php
 
-namespace oeleco\Larasuite\Test;
-
 use oeleco\Larasuite\Services\Service;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
-class ServiceTest extends TestCase
-{
-    protected $service;
+beforeEach(function () {
+    $this->service = $this->getMockForAbstractClass(Service::class);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->service = $this->getMockForAbstractClass(Service::class);
-    }
+test('a standalone service cant be initialized', function () {
+    $serviceClass = app(Service::class);
+})->throws(BindingResolutionException::class);
 
-    /** @test */
-    public function a_standalone_service_cant_be_initialized()
-    {
-        $this->expectException(BindingResolutionException::class);
-        $serviceClass = app(Service::class);
-    }
-
-    /** @test */
-    public function it_will_have_an_initialized_google_client()
-    {
-        $this->assertInstanceOf(\Google_Client::class, $this->service->getClient());
-    }
-}
+it('will have an initialized google client', function () {
+    assertInstanceOf(\Google_Client::class, $this->service->getClient());
+});

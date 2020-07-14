@@ -4,6 +4,8 @@
     "keywords": ["gsuite", "laravel"],
     "homepage": "https://github.com/oele-code/larasuite",
     "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": "^7.2",
         "illuminate/support": "~5.7.0|~5.8.0|^6.0|^7.0",
@@ -22,7 +24,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "oeleco\\Larasuite\\Test\\": "tests/"
+            "Tests\\": "tests/"
         }
     },
     "extra": {
@@ -36,8 +38,11 @@
         }
     },
     "require-dev": {
-        "orchestra/testbench": "~3.0",
-        "phpunit/phpunit": "^7.3",
-        "mockery/mockery": "^1.1"
+        "phpunit/phpunit": "^9.0",
+        "mockery/mockery": "^1.1",
+        "pestphp/pest": "^0.2.3",
+        "pestphp/pest-plugin-laravel": "^0.2.0",
+        "orchestra/testbench": "^5.3",
+        "pestphp/pest-plugin-faker": "^0.2.0"
     }
 }

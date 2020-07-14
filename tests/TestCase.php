@@ -1,10 +1,12 @@
 <?php
 
-namespace oeleco\Larasuite\Test;
+namespace Tests;
+
+use oeleco\Larasuite\Facades\GSuiteUserService;
+use oeleco\Larasuite\Facades\GSuiteOrgUnitService;
+use oeleco\Larasuite\Providers\GSuiteServiceProvider;
 
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use oeleco\Larasuite\Facades\GSuiteUserService;
-use oeleco\Larasuite\Providers\GSuiteServiceProvider;
 
 class TestCase extends OrchestraTestCase
 {
@@ -29,6 +31,7 @@ class TestCase extends OrchestraTestCase
     {
         return [
             'GSuiteUserService' => GSuiteUserService::class,
+            'GSuiteOrgUnitService' => GSuiteOrgUnitService::class,
         ];
     }
 

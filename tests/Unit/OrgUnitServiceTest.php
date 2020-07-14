@@ -1,66 +1,63 @@
 <?php
 
-namespace oeleco\Larasuite\Test\Unit;
+use function Pest\Faker\faker;
 
-use Exception;
-use oeleco\Larasuite\Test\TestCase;
 use oeleco\Larasuite\Services\OrgUnitService;
 
-class OrgUnitServiceTest extends TestCase
-{
-    protected $service;
+beforeEach(function () {
+    $this->service = app(OrgUnitService::class);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->service = app(OrgUnitService::class);
-        $this->faker   = \Faker\Factory::create();
-    }
+test('client will have desired scopes', function () {
+    $client = $this->service->getClient();
 
-    /** @test */
-    public function client_will_have_desired_scopes()
-    {
-        $client = $this->service->getClient();
-        $this->assertEquals($client->getScopes(), $this->service->getServiceSpecificScopes());
-    }
+    assertEquals($client->getScopes(), $this->service->getServiceSpecificScopes());
+});
 
-    /** @test */
-    public function it_will_have_desired_service()
-    {
-        $this->assertInstanceOf(\Google_Service_Directory::class, $this->service->service);
-    }
+it('it will have desired service', function () {
+    assertInstanceOf(\Google_Service_Directory::class, $this->service->service);
+});
 
-    /** @test */
-    public function create_organizational_unit()
-    {
-        $name    = $this->faker->company;
-        $orgUnit = $this->service->create(['name' => $name]);
+test('create a new organizational unit', function () {
+    $name    = faker()->company;
+    $orgUnitCreated = $this->service->create(['name' => $name]);
 
-        $this->assertEquals($orgUnit->getName(), $name);
-    }
+    assertEquals($orgUnitCreated->getName(), $name);
 
-    /** @test */
-    public function updated_organizational_unit()
-    {
-        $orgUnit = $this->service->create(['name' => $this->faker->company]);
+    $this->service->destroy($orgUnitCreated->getId());
+});
 
-        $data = [
-            'name' => $this->faker->company,
-            'description' => $this->faker->catchPhrase,
-        ];
+test('update description of organizational unit', function () {
+    $orgUnitCreated = $this->service->create([
+        'name' => faker()->company
+    ]);
 
-        $UpdatedOrgUnit = $this->service->update($orgUnit->getId(), $data);
+    sleep(5); // wait for data replication by api
 
-        $this->assertEquals($UpdatedOrgUnit->getDescription(), $data['description']);
-    }
+    $data = [
+        'name'        => faker()->company,
+        'description' => faker()->catchPhrase,
+    ];
 
-    /** @test */
-    public function delete_organizational_unit()
-    {
-        $orgUnit = $this->service->create(['name' => $this->faker->company]);
+    $orgUnitUpdated = $this->service->update($orgUnitCreated->getId(), $data);
 
-        $this->assertEmpty(
-            $this->service->destroy($orgUnit->getId())
-        );
-    }
-}
+    assertEquals(
+        [
+        'name' => $orgUnitUpdated->getName(),
+        'description' => $orgUnitUpdated->getDescription()
+    ],
+        $data
+    );
+
+    $this->service->destroy($orgUnitUpdated->getId());
+});
+
+test('delete organizational unit', function () {
+    $orgUnitCreated = $this->service->create([
+        'name' => faker()->company
+    ]);
+
+    $this->assertEmpty(
+        $this->service->destroy($orgUnitCreated->getId())
+    );
+});

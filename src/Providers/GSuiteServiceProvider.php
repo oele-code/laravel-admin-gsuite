@@ -7,6 +7,7 @@ use oeleco\Larasuite\Services\UserService;
 use oeleco\Larasuite\Services\GroupService;
 use oeleco\Larasuite\Services\MemberService;
 use oeleco\Larasuite\Services\OrgUnitService;
+use oeleco\Larasuite\Services\UserPhotoService;
 
 class GSuiteServiceProvider extends ServiceProvider
 {
@@ -43,6 +44,10 @@ class GSuiteServiceProvider extends ServiceProvider
 
         $this->app->bind(MemberService::class, function () {
             return new MemberService;
+        });
+
+        $this->app->bind(UserPhotoService::class, function () {
+            return new UserPhotoService;
         });
 
         $this->mergeConfigFrom(

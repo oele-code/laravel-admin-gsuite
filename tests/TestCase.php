@@ -3,9 +3,12 @@
 namespace Tests;
 
 use oeleco\Larasuite\Facades\GSuiteUserService;
+use oeleco\Larasuite\Facades\GSuiteGroupService;
+use oeleco\Larasuite\Facades\GSuiteMemberService;
 use oeleco\Larasuite\Facades\GSuiteOrgUnitService;
-use oeleco\Larasuite\Providers\GSuiteServiceProvider;
 
+use oeleco\Larasuite\Facades\GSuiteUserPhotoService;
+use oeleco\Larasuite\Providers\GSuiteServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
@@ -32,6 +35,9 @@ class TestCase extends OrchestraTestCase
         return [
             'GSuiteUserService' => GSuiteUserService::class,
             'GSuiteOrgUnitService' => GSuiteOrgUnitService::class,
+            'GSuiteGroupService' => GSuiteGroupService::class,
+            'GSuiteMemberService' => GSuiteMemberService::class,
+            'GSuiteUserPhotoService' => GSuiteUserPhotoService::class
         ];
     }
 
